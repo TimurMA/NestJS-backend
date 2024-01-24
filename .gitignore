@@ -1,0 +1,6 @@
+/main-app/node_modules
+/main-app/dist
+/comment-service/node_modules
+/comment-service/dist
+
+.env

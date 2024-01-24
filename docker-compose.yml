@@ -1,0 +1,33 @@
+services:
+  postgres_maindb:
+    image: postgres
+    container_name: main_database
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${MAIN_DATABASE}
+      POSTGRES_PASSWORD: ${MAIN_PASSWORD}
+      POSTGRES_USER: ${MAIN_USERNAME}
+    ports:
+      - "5435:5432"
+  postgres_commentdb:
+    image: postgres
+    container_name: comment_database
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${COMMENT_DATABASE}
+      POSTGRES_PASSWORD: ${COMMENT_PASSWORD}
+      POSTGRES_USER: ${COMMENT_USERNAME}
+    ports:
+      - "5434:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres_commentdb
+      - postgres_maindb
