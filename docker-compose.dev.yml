@@ -1,7 +1,7 @@
 services:
   postgres_maindb:
     image: postgres
-    container_name: main_database
+    container_name: main_database_dev
     env_file:
       - .env
     environment:
@@ -12,7 +12,7 @@ services:
       - "5435:5432"
   postgres_commentdb:
     image: postgres
-    container_name: comment_database
+    container_name: comment_database_dev
     env_file:
       - .env
     environment:
@@ -22,7 +22,7 @@ services:
     ports:
       - "5434:5432"
   pgadmin:
-    container_name: pgadmin
+    container_name: pgadmin_dev
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
@@ -32,31 +32,3 @@ services:
     depends_on:
       - postgres_commentdb
       - postgres_maindb
-  main_backend:
-    container_name: main_backend
-    build:
-      context: .
-      dockerfile: MainAppDockerfile
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    depends_on:
-      - postgres_maindb
-    environment:
-      - MAIN_HOST=main_database
-      - MAIN_PORT=5432
-  comment_backend:
-    container_name: comment_backend
-    build:
-      context: .
-      dockerfile: CommentServiceDockerfile
-    ports:
-      - "3001:3001"
-    env_file:
-      - .env
-    depends_on:
-      - postgres_commentdb
-    environment:
-      - COMMENT_HOST=comment_database
-      - COMMENT_PORT=5432
