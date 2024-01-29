@@ -24,9 +24,7 @@ services:
       - postgres_db
   gateway:
     container_name: gateway
-    build:
-      context: .
-      dockerfile: GatewayDockerfile
+    image: mta2003/gateway:gb
     ports:
       - "3000:3000"
     env_file:
@@ -40,9 +38,7 @@ services:
       - COMMENT_BACKEND_HOST=comment_backend
   main_backend:
     container_name: main_backend
-    build:
-      context: .
-      dockerfile: MainAppDockerfile
+    image: mta2003/main_backend:mb
     ports:
       - "50050:50050"
       - "50051:50051"
@@ -56,9 +52,7 @@ services:
       - MAIN_BACKEND_HOST=main_backend
   comment_backend:
     container_name: comment_backend
-    build:
-      context: .
-      dockerfile: CommentServiceDockerfile
+    image: mta2003/comment_backend:cb
     ports:
       - "50052:50052"
     env_file:
