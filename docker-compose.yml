@@ -11,7 +11,7 @@ services:
     ports:
       - "5435:5432"
   pgadmin:
-    container_name: pgadmin
+    container_name: pgadmin-prod
     image: dpage/pgadmin4
     env_file:
       - .env
