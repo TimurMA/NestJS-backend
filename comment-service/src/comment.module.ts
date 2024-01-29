@@ -7,6 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './model/entity/comment.entity';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
 import { JwtService } from '@nestjs/jwt';
+import { config } from 'dotenv';
+
+config({ path: '../.env' });
+
+const host: string = process.env.MAIN_HOST ?? 'localhost';
 
 @Module({
   imports: [
@@ -19,7 +24,7 @@ import { JwtService } from '@nestjs/jwt';
         options: {
           package: 'users',
           protoPath: './proto/userService.proto',
-          url: 'localhost:50001',
+          url: host + ':50001',
         },
       },
     ]),

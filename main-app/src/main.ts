@@ -1,6 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { config } from 'dotenv';
+
+config({ path: '../.env' });
+
+const host: string = process.env.MAIN_HOST ?? 'localhost';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,7 +14,7 @@ async function bootstrap() {
     options: {
       package: 'users',
       protoPath: './proto/userService.proto',
-      url: 'localhost:50001',
+      url: host + ':50001',
     },
   });
 
