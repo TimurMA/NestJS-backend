@@ -46,6 +46,7 @@ services:
       - .env
     depends_on:
       - postgres_db
+      - gateway
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
@@ -59,6 +60,7 @@ services:
       - .env
     depends_on:
       - postgres_db
+      - gateway
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432

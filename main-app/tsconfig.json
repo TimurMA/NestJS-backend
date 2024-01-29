@@ -21,6 +21,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "auth.controller.ts"],
+  "include": ["src/**/*.ts", "test/**/*.*.ts"],
   "exclude": ["node_modules"],
 }

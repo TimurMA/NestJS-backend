@@ -1,14 +1,11 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/model/entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthenticationResponse, LoginRequest, RegisterRequest } from './auth';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +22,7 @@ export class AuthService {
       });
 
       if (!user || !compareSync(loginRequest.password, user.password)) {
-        throw new UnauthorizedException('Ошибка авторизации');
+        throw new RpcException('Ошибка авторизации');
       }
 
       const token = await this.jwtService.signAsync({
@@ -41,7 +38,7 @@ export class AuthService {
         token,
       };
     } catch (error) {
-      throw new UnauthorizedException('Authorization is not successful');
+      throw new RpcException('Authorization is not successful');
     }
   }
 
@@ -70,7 +67,7 @@ export class AuthService {
       };
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('Регистрация не удалась');
+      throw new RpcException('Регистрация не удалась');
     }
   }
 }

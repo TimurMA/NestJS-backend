@@ -1,14 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './model/entity/user.entity';
 import { compareSync } from 'bcrypt';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserResponse } from './user';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
@@ -28,7 +25,7 @@ export class UserService {
 
       return result;
     } catch (error) {
-      throw new InternalServerErrorException('Error');
+      throw new RpcException('Error');
     }
   }
 
@@ -42,7 +39,7 @@ export class UserService {
       });
 
       if (newUsername) {
-        throw new BadRequestException();
+        throw new RpcException('Bad request');
       }
 
       userToUpdate.username = newUsername;
@@ -56,7 +53,7 @@ export class UserService {
 
       return result;
     } catch (error) {
-      throw new BadRequestException(error.error);
+      throw new RpcException(error.error);
     }
   }
 
@@ -70,7 +67,7 @@ export class UserService {
       });
 
       if (newEmail) {
-        throw new BadRequestException();
+        throw new RpcException('Bad request');
       }
 
       userToUpdate.email = newEmail;
@@ -84,7 +81,7 @@ export class UserService {
 
       return result;
     } catch {
-      throw new InternalServerErrorException('Ошибка изменения почты');
+      throw new RpcException('Change is not successful');
     }
   }
 
@@ -105,7 +102,7 @@ export class UserService {
       userToUpdate.password = await bcrypt.hash(newPassword, 10);
       await this.userRepository.save(userToUpdate);
     } catch {
-      throw new InternalServerErrorException('Change is not successful');
+      throw new RpcException('Change is not successful');
     }
   }
 }
