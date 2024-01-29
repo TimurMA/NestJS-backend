@@ -4,16 +4,25 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const host = process.env.MAIN_BACKEND_HOST || 'localhost';
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
-      package: 'users',
-      protoPath: './proto/userService.proto',
-      url: 'localhost:50001',
+      package: 'user',
+      protoPath: './proto/user.proto',
+      url: host + ':50051',
+    },
+  });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'auth',
+      protoPath: './proto/auth.proto',
+      url: host + ':50050',
     },
   });
 
   await app.startAllMicroservices();
-  await app.listen(3000);
 }
 bootstrap();

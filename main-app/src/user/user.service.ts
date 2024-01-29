@@ -1,9 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from 'src/user/model/entity/user.entity';
-import { UserDTO } from './model/dto/user.dto';
+import { User } from './model/entity/user.entity';
 import { compareSync } from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserResponse } from './user';
 
 @Injectable()
 export class UserService {
@@ -11,63 +16,73 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async findCurrentUserInfo(id: string): Promise<UserDTO> {
+  async findCurrentUserInfo(id: string): Promise<UserResponse> {
     try {
       const user = await this.userRepository.findOneByOrFail({ id });
 
-      const result = new UserDTO(user.username, user.email, user.id);
+      const result: UserResponse = {
+        username: user.username,
+        email: user.email,
+        id: user.id,
+      };
 
       return result;
     } catch (error) {
-      throw new InternalServerErrorException('Ошибка');
+      throw new InternalServerErrorException('Error');
     }
   }
 
   async updateUsername(
     currentUserId: string,
     newUsername: string,
-  ): Promise<UserDTO> {
+  ): Promise<UserResponse> {
     try {
       const userToUpdate = await this.userRepository.findOneBy({
         id: currentUserId,
       });
 
+      if (newUsername) {
+        throw new BadRequestException();
+      }
+
       userToUpdate.username = newUsername;
       const savedUser: User = await this.userRepository.save(userToUpdate);
 
-      const userDTO = new UserDTO(
-        savedUser.username,
-        savedUser.email,
-        savedUser.id,
-      );
+      const result: UserResponse = {
+        username: savedUser.username,
+        email: savedUser.email,
+        id: savedUser.id,
+      };
 
-      return userDTO;
+      return result;
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Ошибка изменения имя пользователя',
-      );
+      throw new BadRequestException(error.error);
     }
   }
 
   async updateUserEmail(
     currentUserId: string,
     newEmail: string,
-  ): Promise<UserDTO> {
+  ): Promise<UserResponse> {
     try {
       const userToUpdate = await this.userRepository.findOneBy({
         id: currentUserId,
       });
 
+      if (newEmail) {
+        throw new BadRequestException();
+      }
+
       userToUpdate.email = newEmail;
       const savedUser: User = await this.userRepository.save(userToUpdate);
 
-      const userDTO = new UserDTO(
-        savedUser.username,
-        savedUser.email,
-        savedUser.id,
-      );
+      const result: UserResponse = {
+        username: savedUser.username,
+        email: savedUser.email,
+        id: savedUser.id,
+      };
 
-      return userDTO;
+      return result;
     } catch {
       throw new InternalServerErrorException('Ошибка изменения почты');
     }
@@ -87,10 +102,10 @@ export class UserService {
         throw new Error();
       }
 
-      userToUpdate.password = newPassword;
+      userToUpdate.password = await bcrypt.hash(newPassword, 10);
       await this.userRepository.save(userToUpdate);
     } catch {
-      throw new InternalServerErrorException('Ошибка изменения пароля');
+      throw new InternalServerErrorException('Change is not successful');
     }
   }
 }

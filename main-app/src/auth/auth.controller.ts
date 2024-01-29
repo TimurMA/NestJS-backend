@@ -1,25 +1,26 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller } from '@nestjs/common';
 
-import { AuthenticationResponse } from './model/response/authentication.response';
-import { RegisterRequest } from './model/request/register.request';
-import { LoginRequest } from './model/request/login.request';
 import { AuthService } from './auth.service';
+import {
+  AuthServiceController,
+  AuthServiceControllerMethods,
+  AuthenticationResponse,
+  LoginRequest,
+  RegisterRequest,
+} from './auth';
 
 @Controller('/api/auth')
-export class AuthController {
+@AuthServiceControllerMethods()
+export class AuthController implements AuthServiceController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/register')
-  async register(
+  register(
     @Body() registerRequest: RegisterRequest,
   ): Promise<AuthenticationResponse> {
-    return await this.authService.register(registerRequest);
+    return this.authService.register(registerRequest);
   }
 
-  @Post('/login')
-  async login(
-    @Body() loginRequest: LoginRequest,
-  ): Promise<AuthenticationResponse> {
-    return await this.authService.login(loginRequest);
+  login(@Body() loginRequest: LoginRequest): Promise<AuthenticationResponse> {
+    return this.authService.login(loginRequest);
   }
 }

@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package user;
+
+
+
+service UserService {
+    rpc getCurrentUserInfo(UserRequest) returns (UserResponse) {}
+    rpc updateUsername(ChangeUsernameRequest) returns (UserResponse) {}
+    rpc updateUserEmail(ChangeEmailRequest) returns (UserResponse) {}
+    rpc updateUserPassword(ChangePasswordRequest) returns (Response) {}
+}
+
+message Response {
+    string message = 1;
+    int32 statusCode = 2;
+}
+
+message UserRequest{
+    string userId = 1;
+}
+
+message UserResponse {
+    string username = 1;
+    string email = 2;
+    string id = 3;
+}
+
+message ChangePasswordRequest {
+    string newPassword = 1;
+    string oldPassword = 2;
+    string userId = 3;
+}
+
+message ChangeUsernameRequest {
+    string newUsername = 1;
+    string userId = 2;
+}
+
+message ChangeEmailRequest {
+    string newEmail = 1;
+    string userId = 2;
+}
+
+

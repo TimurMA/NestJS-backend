@@ -7,10 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/model/entity/user.entity';
-import { LoginRequest } from './model/request/login.request';
-import { AuthenticationResponse } from './model/response/authentication.response';
-import { RegisterRequest } from './model/request/register.request';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthenticationResponse, LoginRequest, RegisterRequest } from './auth';
 
 @Injectable()
 export class AuthService {
@@ -36,14 +34,14 @@ export class AuthService {
         id: user.id,
       });
 
-      return new AuthenticationResponse(
-        user.id,
-        user.username,
-        user.email,
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
         token,
-      );
+      };
     } catch (error) {
-      throw new UnauthorizedException('Авторизация не удалась');
+      throw new UnauthorizedException('Authorization is not successful');
     }
   }
 
@@ -64,12 +62,12 @@ export class AuthService {
         id: savedUser.id,
       });
 
-      return new AuthenticationResponse(
-        savedUser.id,
-        savedUser.username,
-        savedUser.email,
+      return {
+        id: savedUser.id,
+        username: savedUser.username,
+        email: savedUser.email,
         token,
-      );
+      };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Регистрация не удалась');

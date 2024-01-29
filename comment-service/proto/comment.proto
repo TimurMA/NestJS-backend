@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package comment;
+
+
+service CommentService {
+    rpc getCommentsByUserId(GetUserCommentsRequest) returns (stream CommentsResponse) {}
+    rpc createComment(CreateCommentRequest) returns (CommentResponse) {}
+    rpc updateComment(UpdateCommentRequest) returns (CommentResponse) {}
+    rpc deleteComment(DeleteCommentRequest) returns (Response) {}
+}
+
+message Response {
+    string message = 1;
+    int32 statusCode = 2;
+}
+
+message CommentResponse {
+    string id = 1;
+    string comment = 2;
+    UserDTO user = 3;
+}
+
+message CommentsResponse{
+    repeated CommentResponse comments = 1;
+}
+
+message GetUserCommentsRequest {
+    string userId = 1;
+}
+
+message CreateCommentRequest {
+    string comment = 1;
+    string userId = 2;
+}
+
+message DeleteCommentRequest {
+    string id = 1;
+    string userId = 2;
+}
+
+message UpdateCommentRequest {
+    string id = 1;
+    string comment = 2;
+    string userId = 3;
+}
+
+message UserDTO {
+    string username = 1;
+    string email = 2;
+    string id = 3;
+}

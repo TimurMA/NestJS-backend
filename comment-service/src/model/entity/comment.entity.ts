@@ -1,6 +1,5 @@
 import { BeforeInsert, Column, Entity, PrimaryColumn, Unique } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-
 @Entity()
 @Unique(['id'])
 export class Comment {
@@ -19,5 +18,4 @@ export class Comment {
       this.id = uuidv4();
     }
   }
-  s;
 }

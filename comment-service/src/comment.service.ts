@@ -1,118 +1,117 @@
-import {
-  HttpException,
-  Inject,
-  Injectable,
-  NotAcceptableException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Comment } from './model/entity/comment.entity';
 import { Repository } from 'typeorm';
-import { CommentDTO } from './model/dto/comment.dto';
-import { ClientGrpc } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  CommentResponse,
+  CommentsResponse,
+  CreateCommentRequest,
+  DeleteCommentRequest,
+  Response,
+  UpdateCommentRequest,
+} from './comment';
+import { User } from 'user/library';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
-export class CommentService implements OnModuleInit {
-  private userService;
-
+export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
-    @Inject('USER_SERVICE')
-    private client: ClientGrpc,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  onModuleInit() {
-    this.userService = this.client.getService('UserService');
-  }
-
-  async getCommentByUserId(userId: string): Promise<CommentDTO[]> {
-    let creator = await this.userService
-      .getUser({
+  async getCommentsByUserId(userId: string): Promise<CommentsResponse> {
+    const [comments, user] = await Promise.all([
+      this.commentRepository.findBy({
         userId,
-      })
-      .toPromise()
-      .then((user) => user);
+      }),
+      this.userRepository.findOneBy({ id: userId }),
+    ]);
 
-    if (!creator.username) {
-      creator = userId;
-    }
-
-    const comments: Comment[] = await this.commentRepository.findBy({
-      userId,
-    });
-
-    return comments.map(
-      (comment) => new CommentDTO(comment.comment, comment.id, creator),
-    );
+    return {
+      comments: comments.map((comment) => {
+        const commentResponse: CommentResponse = {
+          comment: comment.comment,
+          id: comment.id,
+          user: user,
+        };
+        return commentResponse;
+      }),
+    };
   }
 
-  async createComment(commentDto: CommentDTO, creatorId: string) {
+  async createComment(commentDto: CreateCommentRequest) {
     try {
       const commentToSave = new Comment();
       commentToSave.comment = commentDto.comment;
-      commentToSave.userId = creatorId;
-      const savedComment = await this.commentRepository.save(commentToSave);
+      commentToSave.userId = commentDto.userId;
 
-      let creator = await this.userService
-        .getUser({
-          userId: creatorId,
-        })
-        .toPromise()
-        .then((user) => user);
+      const [savedComment, user] = await Promise.all([
+        this.commentRepository.save(commentToSave),
+        this.userRepository.findOneBy({ id: commentDto.userId }),
+      ]);
 
-      if (!creator.username || !creator.email || !creator.id) {
-        creator = creatorId;
-      }
-
-      return new CommentDTO(savedComment.comment, savedComment.id, creator);
+      return {
+        comment: savedComment.comment,
+        id: savedComment.id,
+        user: user,
+      };
     } catch (error) {
-      throw new HttpException(error.message, 404);
+      const response: Response = {
+        message: error.message,
+        statusCode: 500,
+      };
+      throw new RpcException(response);
     }
   }
 
   async updateCommentByCommentId(
-    comment: CommentDTO,
-    updaterId: string,
-  ): Promise<CommentDTO> {
+    comment: UpdateCommentRequest,
+  ): Promise<CommentResponse> {
     try {
       const commentToUpdate: Comment = await this.commentRepository.findOneBy({
         id: comment.id,
       });
 
-      if (commentToUpdate || commentToUpdate.id != updaterId) {
-        throw new NotAcceptableException('Не удалось обновить комментарий');
+      if (!commentToUpdate) {
+        throw new RpcException('Update is not successful');
       }
 
       commentToUpdate.comment = comment.comment;
 
-      const savedComment: Comment =
-        await this.commentRepository.save(commentToUpdate);
+      const [savedComment, user] = await Promise.all([
+        this.commentRepository.save(commentToUpdate),
+        this.userRepository.findOneBy({ id: commentToUpdate.userId }),
+      ]);
 
-      let creator = await this.userService
-        .getUser({
-          userId: updaterId,
-        })
-        .toPromise()
-        .then((user) => user);
-
-      if (!creator.username || !creator.email || !creator.id) {
-        creator = updaterId;
-      }
-
-      return new CommentDTO(savedComment.comment, savedComment.id, creator);
+      return {
+        comment: savedComment.comment,
+        id: savedComment.id,
+        user: user,
+      };
     } catch (error) {
-      throw new HttpException(error.message, 500);
+      console.log(error);
+      throw new RpcException({ message: error.message, code: 3 });
     }
   }
 
-  async deleteCommentById(id: string, userId: string): Promise<void> {
-    const commentToDelete = await this.commentRepository.findOneBy({ id });
+  async deleteCommentById(
+    commentToDelete: DeleteCommentRequest,
+  ): Promise<void> {
+    const comment = await this.commentRepository.findOneBy({
+      id: commentToDelete.id,
+    });
 
-    if (commentToDelete || commentToDelete.userId != userId) {
-      throw new NotAcceptableException('Ошибка удаления коммента');
+    if (comment || comment.userId != commentToDelete.userId) {
+      const response: Response = {
+        message: 'Deleting is not successful',
+        statusCode: 500,
+      };
+      throw new RpcException(response);
     }
 
-    await this.commentRepository.delete({ id });
+    await this.commentRepository.delete({ id: commentToDelete.id });
   }
 }

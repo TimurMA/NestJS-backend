@@ -1,51 +1,46 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CommentDTO, User } from './model/dto/comment.dto';
-import { AuthenticationPrincipal } from './jwt-auth/jwt-auth.authentication.principal';
+import {
+  CommentResponse,
+  CommentServiceController,
+  CommentServiceControllerMethods,
+  CommentsResponse,
+  CreateCommentRequest,
+  DeleteCommentRequest,
+  GetUserCommentsRequest,
+  Response,
+  UpdateCommentRequest,
+} from './comment';
+import { Observable, from } from 'rxjs';
 
 @Controller('/api/comment')
-export class CommentController {
+@CommentServiceControllerMethods()
+export class CommentController implements CommentServiceController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Get('/get/:userId')
-  async getAllCommentByUserId(
-    @Param('id') userId: string,
-  ): Promise<CommentDTO[]> {
-    return this.commentService.getCommentByUserId(userId);
+  getCommentsByUserId(
+    request: GetUserCommentsRequest,
+  ): Observable<CommentsResponse> {
+    return from(this.commentService.getCommentsByUserId(request.userId));
   }
 
-  @Post('/create')
-  async createComment(
-    @AuthenticationPrincipal() creator: User,
-    @Body() comment: CommentDTO,
-  ): Promise<CommentDTO> {
-    return this.commentService.createComment(comment, creator.id);
+  createComment(comment: CreateCommentRequest): Promise<CommentResponse> {
+    return this.commentService.createComment(comment);
   }
 
-  @Put('/update')
-  async updateComment(
-    @AuthenticationPrincipal() user: User,
-    @Body() commentToUpdate: CommentDTO,
-  ): Promise<CommentDTO> {
-    return this.commentService.updateCommentByCommentId(
-      commentToUpdate,
-      user.id,
-    );
+  updateComment(
+    commentToUpdate: UpdateCommentRequest,
+  ): Promise<CommentResponse> {
+    return this.commentService.updateCommentByCommentId(commentToUpdate);
   }
 
-  @Delete('/delete/:id')
   async deleteComment(
-    @AuthenticationPrincipal() user: User,
-    @Param('id') id: string,
-  ): Promise<void> {
-    this.commentService.deleteCommentById(id, user.id);
+    commentToDelete: DeleteCommentRequest,
+  ): Promise<Response> {
+    await this.commentService.deleteCommentById(commentToDelete);
+    return {
+      message: 'Успешное удаление комментария',
+      statusCode: 200,
+    };
   }
 }

@@ -1,51 +1,48 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthenticationPrincipal } from 'src/utils/jwt-auth/jwt-auth.authentication.principal';
-import { UserDTO } from './model/dto/user.dto';
 
-import { ChangePasswordRequest } from './model/request/change.password';
-import { GrpcMethod } from '@nestjs/microservices';
+import {
+  ChangeEmailRequest,
+  ChangePasswordRequest,
+  ChangeUsernameRequest,
+  Response,
+  UserRequest,
+  UserResponse,
+  UserServiceController,
+  UserServiceControllerMethods,
+} from './user';
 
 @Controller('/api/profile')
-export class UserController {
+@UserServiceControllerMethods()
+export class UserController implements UserServiceController {
   constructor(private readonly userService: UserService) {}
 
-  @GrpcMethod('UserService', 'GetUser')
-  findUserById(data) {
-    return this.userService.findCurrentUserInfo(data['userId']);
+  getCurrentUserInfo(request: UserRequest): Promise<UserResponse> {
+    return this.userService.findCurrentUserInfo(request.userId);
   }
 
-  @Get('/user-info')
-  async findCurrentUserInfo(@AuthenticationPrincipal() user: UserDTO) {
-    console.log(user.id);
-    return this.userService.findCurrentUserInfo(user.id);
+  updateUsername(request: ChangeUsernameRequest): Promise<UserResponse> {
+    return this.userService.updateUsername(request.userId, request.newUsername);
   }
 
-  @Put('/update/username')
-  async updateUsername(
-    @AuthenticationPrincipal() currentUser: UserDTO,
-    @Body() updateUser: UserDTO,
-  ): Promise<UserDTO> {
-    return this.userService.updateUsername(currentUser.id, updateUser.username);
+  updateUserEmail(updateUser: ChangeEmailRequest): Promise<UserResponse> {
+    return this.userService.updateUserEmail(
+      updateUser.userId,
+      updateUser.newEmail,
+    );
   }
 
-  @Put('/update/email')
-  async updateUserEmail(
-    @AuthenticationPrincipal() currentUser: UserDTO,
-    @Body() updateUser: UserDTO,
-  ): Promise<UserDTO> {
-    return this.userService.updateUserEmail(currentUser.id, updateUser.email);
-  }
-
-  @Put('/update/password')
-  async updatePassword(
-    @AuthenticationPrincipal() currentUser: UserDTO,
-    @Body() changePasswordRequest: ChangePasswordRequest,
-  ): Promise<void> {
-    return this.userService.updatePassword(
-      currentUser.id,
+  async updateUserPassword(
+    changePasswordRequest: ChangePasswordRequest,
+  ): Promise<Response> {
+    await this.userService.updatePassword(
+      changePasswordRequest.userId,
       changePasswordRequest.oldPassword,
       changePasswordRequest.newPassword,
     );
+    return {
+      message: 'Password successfully changed',
+      statusCode: 200,
+    };
   }
 }

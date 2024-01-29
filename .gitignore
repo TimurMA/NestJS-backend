@@ -2,3 +2,5 @@
 /main-app/dist
 /comment-service/node_modules
 /comment-service/dist
+/gateway/dist
+/gateway/node_modules

@@ -1,0 +1,22 @@
+services:
+  postgres_maindb:
+    image: postgres
+    container_name: main_database_dev
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+    ports:
+      - "5435:5432"
+  pgadmin:
+    container_name: pgadmin_dev
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres_maindb
