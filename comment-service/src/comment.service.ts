@@ -12,6 +12,7 @@ import {
 } from './comment';
 import { User } from 'user/library';
 import { RpcException } from '@nestjs/microservices';
+import { Logger } from 'testcontainers/build/common';
 
 @Injectable()
 export class CommentService {
@@ -21,6 +22,8 @@ export class CommentService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  private readonly log = new Logger('CommentService');
 
   async getCommentsByUserId(userId: string): Promise<CommentsResponse> {
     const [comments, user] = await Promise.all([
@@ -63,6 +66,7 @@ export class CommentService {
         message: error.message,
         statusCode: 500,
       };
+      this.log.error(error);
       throw new RpcException(response);
     }
   }
@@ -75,7 +79,7 @@ export class CommentService {
         id: comment.id,
       });
 
-      if (!commentToUpdate) {
+      if (!commentToUpdate || commentToUpdate.userId != comment.userId) {
         throw new RpcException('Update is not successful');
       }
 
@@ -104,7 +108,7 @@ export class CommentService {
       id: commentToDelete.id,
     });
 
-    if (comment || comment.userId != commentToDelete.userId) {
+    if (!comment || comment.userId != commentToDelete.userId) {
       const response: Response = {
         message: 'Deleting is not successful',
         statusCode: 500,

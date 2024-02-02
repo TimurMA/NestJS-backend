@@ -22,7 +22,7 @@ import {
   UserDTO,
 } from './comment';
 import { Observable, catchError, map, throwError } from 'rxjs';
-import { AuthenticationPrincipal } from 'src/utils/jwt-auth/jwt-auth.authentication.principal';
+import { AuthenticationPrincipal } from '../utils/jwt-auth/jwt-auth.authentication.principal';
 
 @Controller('/api/comment')
 export class CommentController implements OnModuleInit {

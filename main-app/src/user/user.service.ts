@@ -32,13 +32,14 @@ export class UserService {
   async updateUsername(
     currentUserId: string,
     newUsername: string,
+    oldUsername: string,
   ): Promise<UserResponse> {
     try {
       const userToUpdate = await this.userRepository.findOneBy({
-        id: currentUserId,
+        username: oldUsername,
       });
 
-      if (newUsername) {
+      if (!newUsername || currentUserId != userToUpdate.id) {
         throw new RpcException('Bad request');
       }
 
@@ -52,21 +53,22 @@ export class UserService {
       };
 
       return result;
-    } catch (error) {
-      throw new RpcException(error.error);
+    } catch {
+      throw new RpcException('Change username is not successful');
     }
   }
 
   async updateUserEmail(
     currentUserId: string,
     newEmail: string,
+    oldEmail: string,
   ): Promise<UserResponse> {
     try {
       const userToUpdate = await this.userRepository.findOneBy({
-        id: currentUserId,
+        email: oldEmail,
       });
 
-      if (newEmail) {
+      if (!newEmail || userToUpdate.id != currentUserId) {
         throw new RpcException('Bad request');
       }
 
@@ -81,7 +83,7 @@ export class UserService {
 
       return result;
     } catch {
-      throw new RpcException('Change is not successful');
+      throw new RpcException('Change email is not successful');
     }
   }
 
@@ -102,7 +104,7 @@ export class UserService {
       userToUpdate.password = await bcrypt.hash(newPassword, 10);
       await this.userRepository.save(userToUpdate);
     } catch {
-      throw new RpcException('Change is not successful');
+      throw new RpcException('Change password is not successful');
     }
   }
 }

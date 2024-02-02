@@ -1,9 +1,5 @@
 {
-  "moduleFileExtensions": [
-    "js",
-    "json",
-    "ts"
-  ],
+  "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
@@ -13,5 +9,7 @@
   "moduleNameMapper": {
     "@app/library/(.*)": "<rootDir>/../libs/library/src/$1",
     "@app/library": "<rootDir>/../libs/library/src"
-  }
+  },
+  "globalSetup": "../src/jest.setup.ts",
+  "globalTeardown": "../src/jest.teardown.ts"
 }

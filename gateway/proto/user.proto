@@ -34,12 +34,14 @@ message ChangePasswordRequest {
 
 message ChangeUsernameRequest {
     string newUsername = 1;
-    string userId = 2;
+    string oldUsername = 2;
+    string userId = 3;
 }
 
 message ChangeEmailRequest {
     string newEmail = 1;
-    string userId = 2;
+    string oldEmail = 2;
+    string userId = 3;
 }
 
 

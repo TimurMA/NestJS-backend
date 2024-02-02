@@ -27,11 +27,13 @@ export interface ChangePasswordRequest {
 
 export interface ChangeUsernameRequest {
   newUsername: string;
+  oldUsername: string;
   userId: string;
 }
 
 export interface ChangeEmailRequest {
   newEmail: string;
+  oldEmail: string;
   userId: string;
 }
 

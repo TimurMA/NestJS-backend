@@ -6,6 +6,8 @@ import { config } from 'dotenv';
 
 config({ path: '../.env' });
 
+const host = process.env.COMMENT_BACKEND_HOST || 'localhost';
+
 @Module({
   imports: [
     ClientsModule.register([
@@ -15,7 +17,7 @@ config({ path: '../.env' });
         options: {
           package: COMMENT_PACKAGE_NAME,
           protoPath: './proto/comment.proto',
-          url: (process.env.COMMENT_BACKEND_HOST || 'localhost') + ':50052',
+          url: host + ':50052',
         },
       },
     ]),

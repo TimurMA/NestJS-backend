@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { Repository } from 'typeorm';
-import { User } from 'src/user/model/entity/user.entity';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthenticationResponse, LoginRequest, RegisterRequest } from './auth';
 import { RpcException } from '@nestjs/microservices';
+import { User } from '../user/model/entity/user.entity';
 
 @Injectable()
 export class AuthService {

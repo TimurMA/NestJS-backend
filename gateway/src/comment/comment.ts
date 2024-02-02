@@ -36,7 +36,7 @@ export interface DeleteCommentRequest {
 export interface UpdateCommentRequest {
   id: string;
   comment: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface UserDTO {

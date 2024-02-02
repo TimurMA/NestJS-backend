@@ -22,13 +22,18 @@ export class UserController implements UserServiceController {
   }
 
   updateUsername(request: ChangeUsernameRequest): Promise<UserResponse> {
-    return this.userService.updateUsername(request.userId, request.newUsername);
+    return this.userService.updateUsername(
+      request.userId,
+      request.newUsername,
+      request.oldUsername,
+    );
   }
 
   updateUserEmail(updateUser: ChangeEmailRequest): Promise<UserResponse> {
     return this.userService.updateUserEmail(
       updateUser.userId,
       updateUser.newEmail,
+      updateUser.oldEmail,
     );
   }
 

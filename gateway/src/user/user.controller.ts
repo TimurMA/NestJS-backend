@@ -12,7 +12,7 @@ import {
   UserServiceClient,
 } from './user';
 import { Observable, catchError, throwError } from 'rxjs';
-import { AuthenticationPrincipal } from 'src/utils/jwt-auth/jwt-auth.authentication.principal';
+import { AuthenticationPrincipal } from '../utils/jwt-auth/jwt-auth.authentication.principal';
 
 @Controller('/api/user')
 export class UserController {
@@ -41,6 +41,7 @@ export class UserController {
     @AuthenticationPrincipal() currentUser: UserDTO,
     @Body() userToUpdate: ChangeUsernameRequest,
   ): Observable<UserResponse | Response> {
+    userToUpdate.userId = currentUser.id;
     return this.userService
       .updateUsername(userToUpdate)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
@@ -51,6 +52,7 @@ export class UserController {
     @AuthenticationPrincipal() currentUser: UserDTO,
     @Body() userToUpdate: ChangeEmailRequest,
   ): Observable<UserDTO | Response> {
+    userToUpdate.userId = currentUser.id;
     return this.userService
       .updateUserEmail(userToUpdate)
       .pipe(catchError((error) => throwError(() => new RpcException(error))));

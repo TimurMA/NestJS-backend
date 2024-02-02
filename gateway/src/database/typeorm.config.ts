@@ -11,8 +11,6 @@ const AppDataSource = new DataSource({
   username: process.env.POSTGRES_USERNAME || 'username',
   password: process.env.POSTGRES_PASSWORD || 'password',
   migrations: ['./src/database/migrations/*.ts'],
-  entities: ['./src/**/model/entity/*.entity.ts'],
-  migrationsRun: true,
 });
 
 AppDataSource.initialize()
@@ -24,13 +22,3 @@ AppDataSource.initialize()
   });
 
 export default AppDataSource;
-
-// type: 'postgres',
-//   host: process.env.POSTGRES_HOST || 'localhost',
-//   port: +process.env.POSTGRES_PORT || 5435,
-//   database: process.env.POSTGRES_DATABASE || 'database',
-//   username: process.env.POSTGRES_USERNAME || 'username',
-//   password: process.env.POSTGRES_PASSWORD || 'password',
-//   migrations: ['./src/database/migrations/*.ts'],
-//   entities: ['./src/**/model/entity/*.entity.ts'],
-//   migrationsRun: true,
