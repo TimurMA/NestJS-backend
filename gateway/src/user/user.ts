@@ -22,19 +22,19 @@ export interface UserResponse {
 export interface ChangePasswordRequest {
   newPassword: string;
   oldPassword: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface ChangeUsernameRequest {
   newUsername: string;
   oldUsername: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface ChangeEmailRequest {
   newEmail: string;
   oldEmail: string;
-  userId: string;
+  userId?: string;
 }
 
 export interface UserDTO {

@@ -32,6 +32,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/microservices": "^10.3.1",
     "@nestjs/platform-express": "^10.0.0",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
@@ -83,7 +84,8 @@
       "<rootDir>/src/"
     ],
     "moduleNameMapper": {
-      "^@app/library(|/.*)$": "<rootDir>/libs/library/src/$1"
+      "^@app/library(|/.*)$": "<rootDir>/libs/library/src/$1",
+      "^@entity/entities(|/.*)$": "<rootDir>/libs/entities/src/$1"
     }
   }
 }

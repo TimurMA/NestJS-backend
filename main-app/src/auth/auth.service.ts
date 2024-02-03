@@ -23,7 +23,7 @@ export class AuthService {
       });
 
       if (!user || !compareSync(loginRequest.password, user.password)) {
-        throw new RpcException('Ошибка авторизации');
+        throw new RpcException('Authorization is not successful');
       }
 
       const token = await this.jwtService.signAsync({
@@ -68,7 +68,7 @@ export class AuthService {
       };
     } catch (error) {
       console.log(error);
-      throw new RpcException('Регистрация не удалась');
+      throw new RpcException('Registration is not successful');
     }
   }
 }

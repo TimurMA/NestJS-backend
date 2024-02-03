@@ -40,7 +40,7 @@ export class UserService {
       });
 
       if (!newUsername || currentUserId != userToUpdate.id) {
-        throw new RpcException('Bad request');
+        throw new RpcException('Change username is not successful');
       }
 
       userToUpdate.username = newUsername;
@@ -69,7 +69,7 @@ export class UserService {
       });
 
       if (!newEmail || userToUpdate.id != currentUserId) {
-        throw new RpcException('Bad request');
+        throw new RpcException('Change email is not successful');
       }
 
       userToUpdate.email = newEmail;
@@ -98,7 +98,7 @@ export class UserService {
       });
 
       if (oldPassword && !compareSync(oldPassword, userToUpdate.password)) {
-        throw new Error();
+        throw new RpcException('Change password is not successful');
       }
 
       userToUpdate.password = await bcrypt.hash(newPassword, 10);

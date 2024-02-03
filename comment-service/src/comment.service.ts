@@ -10,7 +10,6 @@ import {
   Response,
   UpdateCommentRequest,
 } from './comment';
-import { User } from 'user/library';
 import { RpcException } from '@nestjs/microservices';
 import { Logger } from 'testcontainers/build/common';
 
@@ -19,8 +18,6 @@ export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
   ) {}
 
   private readonly log = new Logger('CommentService');
@@ -30,7 +27,9 @@ export class CommentService {
       this.commentRepository.findBy({
         userId,
       }),
-      this.userRepository.findOneBy({ id: userId }),
+      this.commentRepository.query('SELECT * FROM "user" WHERE id = $1', [
+        userId,
+      ]),
     ]);
 
     return {
@@ -38,7 +37,7 @@ export class CommentService {
         const commentResponse: CommentResponse = {
           comment: comment.comment,
           id: comment.id,
-          user: user,
+          user: user[0],
         };
         return commentResponse;
       }),
@@ -53,13 +52,15 @@ export class CommentService {
 
       const [savedComment, user] = await Promise.all([
         this.commentRepository.save(commentToSave),
-        this.userRepository.findOneBy({ id: commentDto.userId }),
+        this.commentRepository.query('SELECT * FROM "user" WHERE id = $1', [
+          commentDto.userId,
+        ]),
       ]);
 
       return {
         comment: savedComment.comment,
         id: savedComment.id,
-        user: user,
+        user: user[0],
       };
     } catch (error) {
       const response: Response = {
@@ -87,13 +88,15 @@ export class CommentService {
 
       const [savedComment, user] = await Promise.all([
         this.commentRepository.save(commentToUpdate),
-        this.userRepository.findOneBy({ id: commentToUpdate.userId }),
+        this.commentRepository.query('SELECT * FROM "user" WHERE id = $1', [
+          commentToUpdate.userId,
+        ]),
       ]);
 
       return {
         comment: savedComment.comment,
         id: savedComment.id,
-        user: user,
+        user: user[0],
       };
     } catch (error) {
       console.log(error);

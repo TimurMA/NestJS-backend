@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommentService } from './comment.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'user/library';
 import { Repository } from 'typeorm';
 
 import { config } from 'dotenv';
@@ -10,6 +9,7 @@ import {
   CommentResponse,
   CreateCommentRequest,
   UpdateCommentRequest,
+  UserDTO,
 } from './comment';
 import { CommentModule } from './comment.module';
 
@@ -17,10 +17,9 @@ config({ path: '../.env' });
 
 describe('CommentService', () => {
   let app: TestingModule;
-  let user: User;
+  let user: UserDTO;
   let commentService: CommentService;
   let commentRepository: Repository<Comment>;
-  let userRepository: Repository<User>;
 
   const saveComment = async (
     comment: string,
@@ -47,7 +46,6 @@ describe('CommentService', () => {
   };
 
   beforeAll(async () => {
-    const userRepositoryToken = getRepositoryToken(User);
     const commentRepositoryToken = getRepositoryToken(Comment);
 
     app = await Test.createTestingModule({
@@ -56,18 +54,20 @@ describe('CommentService', () => {
 
     commentService = app.get<CommentService>(CommentService);
     commentRepository = app.get<Repository<Comment>>(commentRepositoryToken);
-    userRepository = app.get<Repository<User>>(userRepositoryToken);
 
     expect(commentService).toBeDefined();
     expect(commentRepository).toBeDefined();
-    expect(userRepository).toBeDefined();
 
-    user = new User();
-    user.username = 'testUsername';
-    user.email = 'testEmail@test.su';
-    user.password = 'test1234';
+    await commentRepository.query(
+      'INSERT INTO "user" ("id", "email", "username", "password") ' +
+        "VALUES ('ideshnik', 'testEmail@test.su', 'testUsername', 'test1234');",
+    );
 
-    user = await userRepository.save(user);
+    user = {
+      id: 'ideshnik',
+      username: 'testUsername',
+      email: 'testEmail@test.su',
+    };
   }, 20000);
 
   afterAll(async () => {

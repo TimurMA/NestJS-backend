@@ -26,15 +26,15 @@ describe('CommentController', () => {
       password,
     };
 
-    return request(await app.getHttpServer())
+    return request(app.getHttpServer())
       .post('/api/auth/register')
       .send(registerRequest)
       .expect(201)
       .expect((response) => {
-        expect(response.body.token).toBeDefined;
-        expect(response.body.username).toBeDefined;
-        expect(response.body.email).toBeDefined;
-        expect(response.body.id).toBeDefined;
+        expect(response.body.token).toBeDefined();
+        expect(response.body.username).toBeDefined();
+        expect(response.body.email).toBeDefined();
+        expect(response.body.id).toBeDefined();
       })
       .then((response) => response.body);
   };
@@ -53,9 +53,9 @@ describe('CommentController', () => {
       .send(commentToCreate)
       .expect(201)
       .expect((response) => {
-        expect(response.body.id).toBeDefined;
-        expect(response.body.comment).toBeDefined;
-        expect(response.body.user.id).toBeDefined;
+        expect(response.body.id).toBeDefined();
+        expect(response.body.comment).toBeDefined();
+        expect(response.body.user.id).toBeDefined();
       })
       .then((response) => response.body);
   };

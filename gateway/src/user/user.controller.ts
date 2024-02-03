@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Patch } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import {
   ChangeEmailRequest,
@@ -36,7 +36,7 @@ export class UserController {
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 
-  @Put('/update/username')
+  @Patch('/update/username')
   updateUsername(
     @AuthenticationPrincipal() currentUser: UserDTO,
     @Body() userToUpdate: ChangeUsernameRequest,
@@ -47,7 +47,7 @@ export class UserController {
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 
-  @Put('/update/email')
+  @Patch('/update/email')
   updateEmail(
     @AuthenticationPrincipal() currentUser: UserDTO,
     @Body() userToUpdate: ChangeEmailRequest,
@@ -58,7 +58,7 @@ export class UserController {
       .pipe(catchError((error) => throwError(() => new RpcException(error))));
   }
 
-  @Put('/update/password')
+  @Patch('/update/password')
   updatePassword(
     @AuthenticationPrincipal() currentUser: UserDTO,
     @Body() passwordToChange: ChangePasswordRequest,
