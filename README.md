@@ -36,7 +36,7 @@
    cd ./gateway && npm i && cd ..
    ```
 
-4. Запустите базу данных и мигрируйте схемы в нее:
+4. Запустите базу данных и мигрируйте схемы:
 
    ```bash
    docker-compose -f docker-compose-test.yml up -d
@@ -79,5 +79,5 @@
 - E2E тесты:
 
   ```bash
-  cd ../gateway && npm run test:e2e && cd ..
+  cd ./gateway && npm run test:e2e && cd ..
   ```
