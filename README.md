@@ -39,7 +39,7 @@
 4. Запустите базу данных и мигрируйте схемы:
 
    ```bash
-   docker-compose -f docker-compose-test.yml up -d
+   docker-compose -f docker-compose-dev.yml up -d
    ```
 
    ```bash
