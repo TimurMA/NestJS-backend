@@ -22,28 +22,46 @@
    cd NestJS-backend
    ```
 
-3. Запустите базу данных и мигрируйте схемы в нее:
+3. Установите зависимости микросервиса и шлюза:
+
+   ```bash
+   cd ./main-app && npm i && cd ..
+   ```
+
+   ```bash
+   cd ./comment-service && npm i && cd ..
+   ```
+
+   ```bash
+   cd ./gateway && npm i && cd ..
+   ```
+
+4. Запустите базу данных и мигрируйте схемы в нее:
 
    ```bash
    docker-compose -f docker-compose-test.yml up -d
    ```
 
    ```bash
-   cd ./gateway && npm run migrate && cd ..
-   ```
-
-4. Запустите микросервисы и шлюз:
-
-   ```bash
-   cd ./main-app && npm i && npm run start && cd ..
+   cd ./main-app && npm run migrate && cd ..
    ```
 
    ```bash
-   cd ./comment-service && npm i && npm run start && cd ..
+   cd ./comment-service && npm run migrate && cd ..
+   ```
+
+5. Запустите микросервисы и шлюз:
+
+   ```bash
+   cd ./main-app && npm run start && cd ..
    ```
 
    ```bash
-   cd ./gateway && npm i && npm run start && cd ..
+   cd ./comment-service && npm run start && cd ..
+   ```
+
+   ```bash
+   cd ./gateway && npm run start && cd ..
    ```
 
 ## Другие команды

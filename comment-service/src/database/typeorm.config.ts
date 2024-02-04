@@ -10,7 +10,7 @@ const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DATABASE || 'database',
   username: process.env.POSTGRES_USERNAME || 'username',
   password: process.env.POSTGRES_PASSWORD || 'password',
-  migrations: ['../**/src/database/migrations/*.ts'],
+  migrations: ['./src/database/migrations/*.ts'],
 });
 
 AppDataSource.initialize()

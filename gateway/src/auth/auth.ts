@@ -1,24 +1,35 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail } from 'class-validator';
 import { Observable } from 'rxjs';
 
 export const protobufPackage = 'auth';
 
-export interface AuthenticationResponse {
+export class AuthenticationResponse {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   username: string;
+  @ApiProperty()
   email: string;
+  @ApiProperty()
   token: string;
 }
 
-export interface LoginRequest {
+export class LoginRequest {
+  @ApiProperty()
   username: string;
+  @ApiProperty()
   password: string;
 }
 
-export interface RegisterRequest {
+export class RegisterRequest {
+  @ApiProperty()
   username: string;
+  @ApiProperty()
+  @IsEmail()
   email: string;
+  @ApiProperty()
   password: string;
 }
 

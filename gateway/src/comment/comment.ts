@@ -1,48 +1,65 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { ApiProperty } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 
 export const protobufPackage = 'comment';
 
-export interface Response {
+export class Response {
+  @ApiProperty()
   message: string;
+  @ApiProperty()
   statusCode: number;
 }
 
-export interface CommentResponse {
+export class UserDTO {
+  @ApiProperty()
+  username: string;
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
   id: string;
+}
+
+export class CommentResponse {
+  @ApiProperty()
+  id: string;
+  @ApiProperty()
   comment: string;
+  @ApiProperty()
   user: UserDTO | undefined;
 }
 
-export interface CommentsResponse {
+export class CommentsResponse {
+  @ApiProperty()
   comments: CommentResponse[];
 }
 
-export interface GetUserCommentsRequest {
+export class GetUserCommentsRequest {
+  @ApiProperty()
   userId: string;
 }
 
-export interface CreateCommentRequest {
+export class CreateCommentRequest {
+  @ApiProperty()
   comment: string;
+  @ApiProperty()
   userId: string;
 }
 
-export interface DeleteCommentRequest {
+export class DeleteCommentRequest {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   userId: string;
 }
 
-export interface UpdateCommentRequest {
+export class UpdateCommentRequest {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   comment: string;
+  @ApiProperty()
   userId?: string;
-}
-
-export interface UserDTO {
-  username: string;
-  email: string;
-  id: string;
 }
 
 export const COMMENT_PACKAGE_NAME = 'comment';

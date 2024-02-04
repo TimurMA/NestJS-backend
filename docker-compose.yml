@@ -61,6 +61,7 @@ services:
     depends_on:
       - postgres_db
       - gateway
+      - main_backend
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432

@@ -1,45 +1,65 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail } from 'class-validator';
 import { Observable } from 'rxjs';
 
 export const protobufPackage = 'user';
 
-export interface Response {
+export class Response {
+  @ApiProperty()
   message: string;
+  @ApiProperty()
   statusCode: number;
 }
 
-export interface UserRequest {
+export class UserRequest {
+  @ApiProperty()
   userId: string;
 }
 
-export interface UserResponse {
+export class UserResponse {
+  @ApiProperty()
   username: string;
+  @ApiProperty()
   email: string;
+  @ApiProperty()
   id: string;
 }
 
-export interface ChangePasswordRequest {
+export class ChangePasswordRequest {
+  @ApiProperty()
   newPassword: string;
+  @ApiProperty()
   oldPassword: string;
+  @ApiProperty()
   userId?: string;
 }
 
-export interface ChangeUsernameRequest {
+export class ChangeUsernameRequest {
+  @ApiProperty()
   newUsername: string;
+  @ApiProperty()
   oldUsername: string;
+  @ApiProperty()
   userId?: string;
 }
 
-export interface ChangeEmailRequest {
+export class ChangeEmailRequest {
+  @ApiProperty()
+  @IsEmail()
   newEmail: string;
+  @ApiProperty()
   oldEmail: string;
+  @ApiProperty()
   userId?: string;
 }
 
-export interface UserDTO {
+export class UserDTO {
+  @ApiProperty()
   username: string;
+  @ApiProperty()
   email: string;
+  @ApiProperty()
   id: string;
 }
 

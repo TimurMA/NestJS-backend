@@ -23,7 +23,9 @@ import {
 } from './comment';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { AuthenticationPrincipal } from '../utils/jwt-auth/jwt-auth.authentication.principal';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('/api/comment')
 export class CommentController implements OnModuleInit {
   private commentService: CommentServiceClient;

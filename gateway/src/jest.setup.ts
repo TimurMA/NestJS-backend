@@ -5,7 +5,9 @@ require('ts-node/register');
 
 const setup = async () => {
   await setupDockerEnv();
-  execSync('npm run migrate');
+  execSync(
+    'cd ../main-app && npm run migrate && cd ../comment-service && npm run migrate && cd ../gateway',
+  );
 };
 
 export default setup;

@@ -19,6 +19,7 @@ const setup = async () => {
       POSTGRES_USER: process.env.POSTGRES_USERNAME,
     });
   await container.start();
+  execSync('cd ../main-app && npm run migrate && cd ../comment-service');
   execSync('npm run migrate');
 };
 

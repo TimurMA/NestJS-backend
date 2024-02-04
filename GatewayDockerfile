@@ -4,14 +4,20 @@ WORKDIR /test/
 
 COPY .env ./
 
+
 WORKDIR /test/gateway
 
-COPY ./main-app/package*.json ./
+COPY ./gateway/package*.json ./
 
 RUN npm install
 
 COPY ./gateway/ ./
 
+COPY ./comment-service/src/database/migrations ./src/database/migrations
+
+COPY ./main-app/src/database/migrations ./src/database/migrations
+
 EXPOSE 3000
 
 CMD ["sh", "-c", "npm run migrate && npm run start"]
+

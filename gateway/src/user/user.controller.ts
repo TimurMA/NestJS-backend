@@ -13,7 +13,9 @@ import {
 } from './user';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AuthenticationPrincipal } from '../utils/jwt-auth/jwt-auth.authentication.principal';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('/api/user')
 export class UserController {
   private userService: UserServiceClient;

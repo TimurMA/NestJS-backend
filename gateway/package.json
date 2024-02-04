@@ -19,9 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
-    "makemigration": "npm run typeorm -- migration:create ./src/database/migrations/$npm_config_name",
-    "migrate": "npm run typeorm migration:run -- -d src/database/typeorm.config.ts",
-    "rollback": "npm run typeorm -- migration:revert -d src/database/typeorm.config.ts",
+    "migrate": "npm run typeorm migration:run -- -d ./src/database/typeorm.config.ts",
     "proto:generate-interface": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ --ts_proto_opt=nestJs=true ./proto/$npm_config_name"
   },
   "dependencies": {
@@ -32,7 +30,10 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/microservices": "^10.3.1",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.2.0",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "dotenv": "^16.4.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",

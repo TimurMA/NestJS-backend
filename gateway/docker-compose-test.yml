@@ -37,6 +37,7 @@ services:
       - ../.env
     depends_on:
       - postgres_maindb
+      - main_backend
     environment:
       - POSTGRES_HOST=test_e2e
       - POSTGRES_PORT=5432
